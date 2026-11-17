@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickBites Fast Food</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --brand: #e85d2a;
+            --brand-dark: #c94318;
+            --brand-soft: #fff0e8;
+            --ink: #20242b;
+            --muted: #737985;
+            --surface: #ffffff;
+            --page: #fffaf6;
+            --line: #eee6df;
+            --green: #198754;
+            --shadow: 0 14px 38px rgba(53, 35, 22, .08);
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            padding: clamp(12px, 3vw, 36px);
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 8% 0%, rgba(255, 205, 157, .28), transparent 30rem),
+                var(--page);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            line-height: 1.55;
+        }
+
+        .container {
+            width: min(100%, 1120px);
+            margin: 0 auto;
+            padding: clamp(18px, 3.5vw, 42px);
+            background: var(--surface);
+            border: 1px solid rgba(238, 230, 223, .9);
+            border-radius: 26px;
+            box-shadow: var(--shadow);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Manrope', sans-serif;
+            letter-spacing: -.035em;
+        }
+        h1 {
+            margin: 0 0 30px;
+            padding: 28px 18px;
+            color: #fff;
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3.1rem);
+            line-height: 1.15;
+            font-weight: 800;
+            border-radius: 20px;
+            background: linear-gradient(120deg, #25242a, #463027 58%, #8c3c20);
+            box-shadow: 0 12px 28px rgba(70, 48, 39, .18);
+        }
+        h2 {
+            margin: 30px 0 20px;
+            color: var(--ink);
+            font-size: clamp(1.35rem, 3vw, 1.8rem);
+            font-weight: 800;
+            text-align: left;
+        }
+        #menu + h2, .container > h2 { text-align: left; }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 225px), 1fr));
+            gap: 22px;
+            margin-bottom: 34px;
+        }
+        .menu-item {
+            min-width: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: 0 5px 18px rgba(53, 35, 22, .045);
+            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+        }
+        .menu-item:hover {
+            transform: translateY(-4px);
+            border-color: #f0c7b4;
+            box-shadow: 0 14px 28px rgba(53, 35, 22, .1);
+        }
+        .menu-item img {
+            display: block;
+            width: 100%;
+            height: 185px;
+            object-fit: cover;
+            background: #f3ece6;
+        }
+        .menu-content { padding: 17px 17px 14px; }
+        .menu-item h3 {
+            margin: 0 0 8px;
+            font-size: 1.08rem;
+            line-height: 1.35;
+            font-weight: 800;
+        }
+        .menu-item p {
+            margin: 0 0 12px;
+            color: var(--brand-dark);
+            font-family: 'Manrope', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+        }
+        .menu-item select {
+            width: 100%;
+            min-height: 42px;
+            margin: 4px 0 0;
+            padding: 9px 11px;
+            color: var(--ink);
+            background: #fffaf7;
+            border: 1px solid #e8dcd2;
+            border-radius: 10px;
+            font: inherit;
+            font-size: .9rem;
+        }
+        button, input, select, textarea { font: inherit; }
+        .menu-item button {
+            width: calc(100% - 28px);
+            margin: 0 14px 14px;
+            padding: 12px 14px;
+            color: #fff;
+            background: var(--brand);
+            border: 0;
+            border-radius: 11px;
+            cursor: pointer;
+            font-size: .94rem;
+            font-weight: 700;
+            transition: background .18s ease, transform .18s ease;
+        }
+        .menu-item button:hover { background: var(--brand-dark); }
+        .menu-item button:active, .checkout-btn:active { transform: scale(.99); }
+
+        .cart-section {
+            margin-top: 34px;
+            padding-top: 10px;
+            border-top: 1px solid var(--line);
+        }
+        #cart-items {
+            margin: 0 0 18px;
+            padding: 0;
+            list-style: none;
+        }
+        #cart-items li {
+            margin: 8px 0;
+            padding: 12px 14px;
+            background: #fffaf7;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            overflow-wrap: anywhere;
+        }
+        .totals-summary {
+            margin: 18px 0 28px;
+            padding: 18px 20px;
+            background: #fff4ed;
+            border: 1px solid #f5ddcf;
+            border-radius: 16px;
+        }
+        .totals-summary p {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 6px 0;
+            color: #5d514b;
+        }
+        .totals-summary p:last-child {
+            margin-top: 12px;
+            padding-top: 12px;
+            color: var(--ink);
+            border-top: 1px solid #edd3c4;
+            font-size: 1.12rem;
+        }
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #37312e;
+            font-size: .92rem;
+            font-weight: 700;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            display: block;
+            width: 100%;
+            min-height: 46px;
+            padding: 12px 14px;
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid #e4dcd5;
+            border-radius: 11px;
+            font-family: inherit;
+            font-size: .96rem;
+            outline: none;
+            transition: border-color .18s ease, box-shadow .18s ease;
+        }
+        .form-group textarea { min-height: 88px; resize: vertical; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px rgba(232, 93, 42, .13);
+        }
+        .checkout-btn {
+            width: 100%;
+            min-height: 54px;
+            padding: 15px 20px;
+            color: #fff;
+            background: var(--green);
+            border: 0;
+            border-radius: 13px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 800;
+            box-shadow: 0 8px 18px rgba(25, 135, 84, .16);
+            transition: background .18s ease, transform .18s ease;
+        }
+        .checkout-btn:hover { background: #146c43; }
+        #loading {
+            display: none;
+            margin: 14px 0 0;
+            color: var(--muted);
+            text-align: center;
+            font-size: .9rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 16px; border-radius: 18px; }
+            h1 { margin-bottom: 24px; padding: 24px 12px; border-radius: 15px; }
+            h2 { margin-top: 24px; }
+            .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+            .menu-item { border-radius: 13px; }
+            .menu-item img { height: 125px; }
+            .menu-content { padding: 12px 11px 10px; }
+            .menu-item h3 { font-size: .94rem; }
+            .menu-item p { font-size: 1.02rem; }
+            .menu-item select { padding: 8px 6px; font-size: .78rem; }
+            .menu-item button { width: calc(100% - 16px); margin: 0 8px 8px; padding: 10px 6px; font-size: .8rem; }
+            .totals-summary { padding: 15px; }
+        }
+        @media (max-width: 360px) {
+            .menu-grid { grid-template-columns: 1fr; }
+            .menu-item img { height: 180px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🍔 SimBites Express</h1>
+    
+    <h2>Menu</h2>
+    <div class="menu-grid" id="menu">
+        
+        <!-- Cheeseburger -->
+        <div class="menu-item">
+            <img src="cheeseburger.jpg" alt="Cheeseburger" onerror="this.src='https://via.placeholder.com/240x140?text=Cheeseburger'">
+            <div class="menu-content">
+                <h3>Cheeseburger</h3>
+                <p>R 65.00</p>
+                <select id="spice-cheeseburger">
+                    <option value="Non-Spicy">🤍 Non-Spicy</option>
+                    <option value="Mild">🌶️ Mild</option>
+                    <option value="Hot" selected>🌶️🌶️ Hot</option>
+                    <option value="Extra Hot">🌶️🌶️🌶️ Extra Hot</option>
+                </select>
+            </div>
+            <button onclick="addToCart('Cheeseburger', 65, 'spice-cheeseburger')">Add to Order</button>
+        </div>
+
+        <!-- Crispy Fries -->
+        <div class="menu-item">
+            <img src="fries.jpg" alt="Crispy Fries" onerror="this.src='https://via.placeholder.com/240x140?text=Crispy+Fries'">
+            <div class="menu-content">
+                <h3>Crispy Fries</h3>
+                <p>R 30.00</p>
+                <select id="spice-fries">
+                    <option value="Non-Spicy" selected>🤍 Non-Spicy</option>
+                    <option value="Mild">🌶️ Mild</option>
+                    <option value="Hot">🌶️🌶️ Hot</option>
+                    <option value="Extra Hot">🌶️🌶️🌶️ Extra Hot</option>
+                </select>
+            </div>
+            <button onclick="addToCart('Crispy Fries', 30, 'spice-fries')">Add to Order</button>
+        </div>
+
+        <!-- Double Crunch Chicken Burger -->
+        <div class="menu-item">
+            <img src="chicken-burger.jpg" alt="Double Crunch Chicken Burger" onerror="this.src='https://via.placeholder.com/240x140?text=Chicken+Burger'">
+            <div class="menu-content">
+                <h3>Double Crunch Chicken Burger</h3>
+                <p>R 75.00</p>
+                <select id="spice-chicken">
+                    <option value="Non-Spicy">🤍 Non-Spicy</option>
+                    <option value="Mild">🌶️ Mild</option>
+                    <option value="Hot" selected>🌶️🌶️ Hot</option>
+                    <option value="Extra Hot">🌶️🌶️🌶️ Extra Hot</option>
+                </select>
+            </div>
+            <button onclick="addToCart('Double Crunch Chicken Burger', 75, 'spice-chicken')">Add to Order</button>
+        </div>
+
+        <!-- Hot Dog -->
+        <div class="menu-item">
+            <img src="hotdog.jpg" alt="Hot Dog" onerror="this.src='https://via.placeholder.com/240x140?text=Hot+Dog'">
+            <div class="menu-content">
+                <h3>Hot Dog</h3>
+                <p>R 10.00</p>
+                <select id="spice-hotdog">
+                    <option value="Non-Spicy" selected>🤍 Non-Spicy</option>
+                    <option value="Mild">🌶️ Mild</option>
+                    <option value="Hot">🌶️🌶️ Hot</option>
+                    <option value="Extra Hot">🌶️🌶️🌶️ Extra Hot</option>
+                </select>
+            </div>
+            <button onclick="addToCart('Hot Dog', 10, 'spice-hotdog')">Add to Order</button>
+        </div>
+
+        <!-- Fully Loaded Hot Dog -->
+        <div class="menu-item">
+            <img src="loaded-hotdog.jpg" alt="Fully Loaded Hot Dog" onerror="this.src='https://via.placeholder.com/240x140?text=Fully+Loaded+Hot+Dog'">
+            <div class="menu-content">
+                <h3>Fully Loaded Hot Dog</h3>
+                <p>R 15.00</p>
+                <select id="spice-loaded-hotdog">
+                    <option value="Non-Spicy">🤍 Non-Spicy</option>
+                    <option value="Mild">🌶️ Mild</option>
+                    <option value="Hot" selected>🌶️🌶️ Hot</option>
+                    <option value="Extra Hot">🌶️🌶️🌶️ Extra Hot</option>
+                </select>
+            </div>
+            <button onclick="addToCart('Fully Loaded Hot Dog', 15, 'spice-loaded-hotdog')">Add to Order</button>
+        </div>
+
+        <!-- Russian Sausage Hot Dog -->
+        <div class="menu-item">
+            <img src="russian-hotdog.jpg" alt="Russian Sausage Hot Dog" onerror="this.src='https://via.placeholder.com/240x140?text=Russian+Hot+Dog'">
+            <div class="menu-content">
+                <h3>Russian Sausage Hot Dog</h3>
+                <p>R 13.00</p>
+                <select id="spice-russian">
+                    <option value="Non-Spicy">🤍 Non-Spicy</option>
+                    <option value="Mild">🌶️ Mild</option>
+                    <option value="Hot" selected>🌶️🌶️ Hot</option>
+                    <option value="Extra Hot">🌶️🌶️🌶️ Extra Hot</option>
+                </select>
+            </div>
+            <button onclick="addToCart('Russian Sausage Hot Dog', 13, 'spice-russian')">Add to Order</button>
+        </div>
+
+        <!-- Fully Loaded Russian Hot Dog -->
+        <div class="menu-item">
+            <img src="loaded-russian.jpg" alt="Fully Loaded Russian Hot Dog" onerror="this.src='https://via.placeholder.com/240x140?text=Fully+Loaded+Russian'">
+            <div class="menu-content">
+                <h3>Fully Loaded Russian Hot Dog</h3>
+                <p>R 18.00</p>
+                <select id="spice-loaded-russian">
+                    <option value="Non-Spicy">🤍 Non-Spicy</option>
+                    <option value="Mild">🌶️ Mild</option>
+                    <option value="Hot" selected>🌶️🌶️ Hot</option>
+                    <option value="Extra Hot">🌶️🌶️🌶️ Extra Hot</option>
+                </select>
+            </div>
+            <button onclick="addToCart('Fully Loaded Russian Hot Dog', 18, 'spice-loaded-russian')">Add to Order</button>
+        </div>
+
+        <!-- Soda -->
+        <div class="menu-item">
+            <img src="soda.jpg" alt="Soda" onerror="this.src='https://via.placeholder.com/240x140?text=Soda+500ml'">
+            <div class="menu-content">
+                <h3>Soda (500ml)</h3>
+                <p>R 25.00</p>
+                <select id="spice-soda" disabled style="background: #eee; color: #888;">
+                    <option value="N/A">Not Applicable</option>
+                </select>
+            </div>
+            <button onclick="addToCart('Soda (500ml)', 25, 'spice-soda')">Add to Order</button>
+        </div>
+
+    </div>
+
+    <div class="cart-section">
+        <h2>Your Cart</h2>
+        <ul id="cart-items"><li>Cart is empty</li></ul>
+        
+        <div class="totals-summary">
+            <p>Subtotal: R <span id="cart-subtotal">0.00</span></p>
+            <p>Delivery Fee: R <span id="delivery-fee-display">0.00</span></p>
+            <p><strong>Total: R <span id="cart-total">0.00</span></strong></p>
+        </div>
+        
+        <h2>Order & Customer Details</h2>
+        <div class="form-group">
+            <label for="fulfillment">Order Type</label>
+            <select id="fulfillment" onchange="toggleDeliveryFields()">
+                <option value="Delivery">Delivery (Flat R20)</option>
+                <option value="Collection">Collection (Free)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Enter your name">
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="text" id="phone" placeholder="Enter your phone number">
+        </div>
+
+        <div class="form-group" id="address-group">
+            <label for="address">Delivery Address / Room Number</label>
+            <input type="text" id="address" placeholder="Enter street address, complex name, or room number">
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Delivery Notes (Optional)</label>
+            <textarea id="notes" rows="2" placeholder="e.g., Ring the doorbell, leave at gate, extra sauce please"></textarea>
+        </div>
+        
+        <button class="checkout-btn" onclick="submitOrder()">💬 Send Order via WhatsApp</button>
+        <p id="loading">Saving order and opening WhatsApp...</p>
+    </div>
+</div>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyhLOdjqxgYdObr5DzC0firHPmHNXe1kJMpscboH3alrNdNVWKCy8IELVxWj69M99tlfw/exec"; // <-- Paste your Google Apps Script Web App URL here
+    const WHATSAPP_NUMBER = "27640696529"; // <-- e.g., 27821234567 (No '+' sign)
+    let cart = [];
+
+    function addToCart(itemName, price, selectId) {
+        const selectElement = document.getElementById(selectId);
+        let spiceLevel = selectElement && !selectElement.disabled ? selectElement.value : "";
+        
+        let descriptiveName = spiceLevel ? `${itemName} [${spiceLevel}]` : itemName;
+        
+        cart.push({ item: descriptiveName, price: price });
+        updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+        const cartList = document.getElementById("cart-items");
+        const subtotalSpan = document.getElementById("cart-subtotal");
+        const feeSpan = document.getElementById("delivery-fee-display");
+        const totalSpan = document.getElementById("cart-total");
+        
+        if (cart.length === 0) {
+            cartList.innerHTML = "<li>Cart is empty</li>";
+            subtotalSpan.innerText = "0.00";
+            feeSpan.innerText = "0.00";
+            totalSpan.innerText = "0.00";
+            return;
+        }
+
+        cartList.innerHTML = "";
+        let subtotal = 0;
+        cart.forEach((cartItem) => {
+            subtotal += cartItem.price;
+            cartList.innerHTML += `<li>${cartItem.item} - R ${cartItem.price.toFixed(2)}</li>`;
+        });
+
+        const fulfillmentType = document.getElementById("fulfillment").value;
+        const deliveryFee = fulfillmentType === "Delivery" ? 20 : 0;
+        const grandTotal = subtotal + deliveryFee;
+
+        subtotalSpan.innerText = subtotal.toFixed(2);
+        feeSpan.innerText = deliveryFee.toFixed(2);
+        totalSpan.innerText = grandTotal.toFixed(2);
+    }
+
+    function toggleDeliveryFields() {
+        const fulfillmentType = document.getElementById("fulfillment").value;
+        const addressGroup = document.getElementById("address-group");
+        
+        if (fulfillmentType === "Collection") {
+            addressGroup.style.display = "none";
+        } else {
+            addressGroup.style.display = "block";
+        }
+        updateCartDisplay();
+    }
+
+    function submitOrder() {
+        const name = document.getElementById("name").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const fulfillment = document.getElementById("fulfillment").value;
+        const address = document.getElementById("address").value.trim();
+        const notes = document.getElementById("notes").value.trim();
+
+        if (cart.length === 0) {
+            alert("Please add items to your cart before ordering.");
+            return;
+        }
+        if (!name || !phone) {
+            alert("Please provide your name and phone number.");
+            return;
+        }
+        if (fulfillment === "Delivery" && !address) {
+            alert("Please provide a delivery address.");
+            return;
+        }
+
+        const itemsString = cart.map(i => i.item).join(", ");
+        
+        let subtotal = cart.reduce((sum, i) => sum + i.price, 0);
+        const deliveryFee = fulfillment === "Delivery" ? 20 : 0;
+        const totalAmount = subtotal + deliveryFee;
+        const totalFormatted = `R ${totalAmount.toFixed(2)}`;
+
+        const payload = {
+            name: name,
+            phone: phone,
+            fulfillment: fulfillment,
+            address: fulfillment === "Delivery" ? address : "N/A (Collection)",
+            notes: notes || "None",
+            items: itemsString,
+            total: totalFormatted
+        };
+
+        document.getElementById("loading").style.display = "block";
+
+        // 1. Send data to Google Sheet Apps Script backend in background
+        fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        }).catch(err => console.error("Sheet sync error:", err));
+
+        // 2. Build the WhatsApp Message Text
+        let whatsappMessage = `*New Order Received! 🍔*\n\n` +
+                              `*Name:* ${name}\n` +
+                              `*Phone:* ${phone}\n` +
+                              `*Type:* ${fulfillment}\n` +
+                              `*Address:* ${fulfillment === 'Delivery' ? address : 'Collection'}\n` +
+                              `*Notes:* ${notes || 'None'}\n\n` +
+                              `*Items:* \n- ${cart.map(i => i.item).join('\n- ')}\n\n` +
+                              `*Total:* ${totalFormatted}`;
+
+        // Encode message for URL use
+        let encodedMessage = encodeURIComponent(whatsappMessage);
+        let whatsappURL = `https://wa.me/${27640696529}?text=${encodedMessage}`;
+
+        // 3. Clear form, reset cart, and redirect user to WhatsApp after a brief moment
+        setTimeout(() => {
+            document.getElementById("loading").style.display = "none";
+            cart = [];
+            updateCartDisplay();
+            document.getElementById("name").value = "";
+            document.getElementById("phone").value = "";
+            document.getElementById("address").value = "";
+            document.getElementById("notes").value = "";
+
+            // Open WhatsApp with the generated order message
+            window.location.href = whatsappURL;
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>
