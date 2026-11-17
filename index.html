@@ -381,11 +381,14 @@
             <div class="menu-content">
                 <h3>Soda (500ml)</h3>
                 <p>R 25.00</p>
-                <select id="spice-soda" disabled style="background: #eee; color: #888;">
-                    <option value="N/A">Not Applicable</option>
+                <select id="flavour">
+                    <option value="Non-Spicy">Watermelon Fizz</option>
+                    <option value="Mild">Bubblegum Fizz</option>
+                    <option value="Hot" selected>Passion-Fruit Fizz</option>
+                    
                 </select>
             </div>
-            <button onclick="addToCart('Soda (500ml)', 25, 'spice-soda')">Add to Order</button>
+            <button onclick="addToCart('Soda (500ml)', 25, 'flavour')">Add to Order</button>
         </div>
 
     </div>
